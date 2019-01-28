@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import {Http} from '@angular/http';
 import { PostService } from './post.service';
+import { NotKnownError } from '../not-known-error';
+import { KnownError } from '../known-error';
 
 @Component({
   selector: 'app-post',
@@ -60,9 +62,9 @@ export class PostComponent implements OnInit {
       const index = this.posts.indexOf(post);
       this.posts.splice(0, index);
     },
-    (error: Response) => {
-     if (error.status === 404) {
-      alert(`Error Occured because: ${error.statusText}`);
+    (error: KnownError) => {
+     if (error instanceof NotKnownError) {
+      alert(`Error Occured because: ${error}`);
      } else {
       alert('Unexpected Error has occured');
      }
