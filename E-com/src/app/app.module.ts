@@ -6,12 +6,15 @@ import { PostComponent } from './post/post.component';
 import { HttpClientModule } from '@angular/common/http';
 import { HttpModule } from '@angular/http';
 import { PostService } from './post/post.service';
+import { TableRelationComponent } from './table-relation/table-relation.component';
+import * as d3 from 'd3';
 
 
 @NgModule({
   declarations: [
     AppComponent,
-    PostComponent
+    PostComponent,
+    TableRelationComponent
   ],
   imports: [
     BrowserModule,
