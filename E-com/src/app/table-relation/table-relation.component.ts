@@ -53,15 +53,17 @@ export class TableRelationComponent implements OnInit, OnChanges {
     width = +svg.attr('width'),
     height = +svg.attr('height');
 
-
 const simulation = d3.forceSimulation()
           .nodes(this.data);
 
 simulation
-    .force('charge_force', d3.forceManyBody().strength(-200).distanceMax(200).distanceMin(30))
-    .force('center_force', d3.forceCenter(width / 4, height / 4));
+    .force('charge_force', d3.forceManyBody().distanceMin(30).distanceMax(200).strength(-500))
+    .force('center_force', d3.forceCenter(width / 2, height / 2));
 
-const node = svg.append('g')
+    const g = svg.append('g')
+    .attr('class', 'everything');
+
+const node = g.append('g')
         .attr('class', 'nodes')
         .selectAll('circle')
         .data(this.data)
@@ -77,36 +79,106 @@ const node = svg.append('g')
               return 'black';
           }
       }
+    const text = g.append('g')
+      .selectAll('text')
+      .data(this.data)
+      .enter().append('text')
+        .text(d => d.name)
+        .attr('font-size', 15)
+        .attr('dx', 15)
+        .attr('dy', 4);
 
 simulation.on('tick', tickActions );
 
 const link_force =  d3.forceLink(this.links_data)
-                        .id(function(d: any) { return d.name; });
+                        .id(function(d: any) { return d.name; }).distance(250).strength(1);
 
 
 simulation.force('links', link_force);
 
-const link = svg.append('g')
+const link = g.append('g')
       .attr('class', 'links')
     .selectAll('line')
     .data(this.links_data)
     .enter().append('line')
-      .attr('stroke-width', 2);
+      .attr('stroke-width', 2); // .attr('marker-end', 'url(#arrow)');
+
+      // for arrow
+      // svg.append('svg:defs').append('svg:marker')
+      // .attr('id', 'arrow')
+      // .attr('refX', 6)
+      // .attr('refY', 6)
+      // .attr('markerWidth', 30)
+      // .attr('markerHeight', 30)
+      // .attr('markerUnits', 'userSpaceOnUse')
+      // .attr('orient', 'auto')
+      // .append('path')
+      // .attr('d', 'M 0 0 12 6 0 12 3 6')
+      // .style('fill', '#999');
+
+    const drag_handler = d3.drag()
+    .on('start', drag_start)
+    .on('drag', drag_drag)
+    .on('end', drag_end);
+
+    drag_handler(node);
+
+    const zoom_handler: any = d3.zoom()
+    .on('zoom', zoom_actions);
+
+    zoom_handler(svg);
+
+    function zoom_actions() {
+    g.attr('transform', d3.event.transform);
+}
+
 
 function tickActions() {
     node
         .attr('cx', function(d) { return (d.x); })
         .attr('cy', function(d) { return (d.y); });
-        // append('text')
-        // .attr('cx', function(d) { return (d.x); })
-        // .attr('cy', function(d) { return (d.y); })
-        // .text(function(d: any) { return d.name; })
     link
         .attr('x1', function(d: any) { return (d.source.x); })
         .attr('y1', function(d: any) { return (d.source.y); })
         .attr('x2', function(d: any) { return (d.target.x); })
         .attr('y2', function(d: any) { return (d.target.y); });
+    text
+        .attr('x', d => d.x)
+        .attr('y', d => d.y);
 
   }
+
+  function drag_start(d) {
+    if (!d3.event.active) {
+    simulation.alphaTarget(0.3).restart();
+    d.fx = d.x;
+    d.fy = d.y;
+    }
+  }
+
+  function drag_drag(d) {
+    d.fx = d3.event.x;
+    d.fy = d3.event.y;
+  }
+
+  function drag_end(d) {
+    if (!d3.event.active) {
+        simulation.alphaTarget(0);
+    d.fx = d.x;
+    d.fy = d.y;
+    }
+  }
+
+node.on('click', function(d) {
+  link.style('stroke-dasharray', function(l) {
+    if (d === l.source || d === l.target) {
+       return '5,5';
+    }
+    });
+});
+
+node.on('mouseout', function() {
+  link.style('stroke-dasharray', 0);
+});
 }
 }
