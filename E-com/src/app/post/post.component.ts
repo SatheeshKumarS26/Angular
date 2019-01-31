@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import {Http} from '@angular/http';
 import { PostService } from './post.service';
-import { NotKnownError } from '../not-known-error';
-import { KnownError } from '../known-error';
+import { NotFoundError } from '../not-known-error';
+import { AppError } from '../app-error';
+import { BadInput } from '../bad-input-error';
 
 @Component({
   selector: 'app-post',
@@ -16,59 +16,56 @@ export class PostComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.postservice.getpost().subscribe(response => {
-      this.posts = response.json();
-      },
-      (error: Response) => {
-       if (error.status === 404) {
-        alert(`Error Occured because: ${error.statusText}`);
-       } else {
-        alert('Unexpected Error has occured');
-       }
-      }
-      );
+    this.postservice.getpost().subscribe(response => this.posts = response);
   }
 
   createpost(input: HTMLInputElement) {
   let post: any = {title: input.value};
+  this.posts.splice(0, 0, post); // pessimistic update
   input.value = '';
   this.postservice.createpost(post).subscribe(response => {
-    post = response.json();
-    this.posts.splice(0, 0, post);
+    post = response;
   },
-  (error: Response) => {
-   if (error.status === 404) {
-    alert(`Error Occured because: ${error.statusText}`);
+  (error: AppError) => {
+    this.posts.splice(0, 1);  // pessimistic
+   if (error instanceof BadInput) {
+    // this.form.setErrors(error);
    } else {
-    alert('Unexpected Error has occured');
+    throw error;
    }
   });
   }
 
   updatepost(post) {
-  this.postservice.updatepost(post).subscribe(response => {
+  this.postservice.updatepost(post).subscribe(() => {
+    alert('Successfully updated isRead Field');
   },
-  (error: Response) => {
-   if (error.status === 404) {
-    alert(`Error Occured because: ${error.statusText}`);
-   } else {
-    alert('Unexpected Error has occured');
-   }
+  (error: AppError) => {
+   if (error instanceof NotFoundError) {
+    alert(`Error Occured because: ${error}`);
+   } else {throw error; } // global error Handler
   });
   }
 
   deletepost(post) {
-    this.postservice.deletepost(post).subscribe(response => {
+    this.postservice.deletepost(post).subscribe(() => {
       const index = this.posts.indexOf(post);
-      this.posts.splice(0, index);
+      this.posts.splice(index, 1);
     },
-    (error: KnownError) => {
-     if (error instanceof NotKnownError) {
+    (error: AppError) => {
+     if (error instanceof NotFoundError) {
       alert(`Error Occured because: ${error}`);
      } else {
-      alert('Unexpected Error has occured');
+      throw error;
      }
     });
   }
+
+  getGitFollowers () {
+    this.postservice.gitFollowers().subscribe(res => {
+      console.log(res);
+      alert('Console has list of followers');
+  });
+}
 
 }

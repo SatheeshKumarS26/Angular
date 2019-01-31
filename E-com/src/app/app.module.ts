@@ -1,12 +1,14 @@
 import { BrowserModule } from '@angular/platform-browser';
-import { NgModule } from '@angular/core';
+import { NgModule, ErrorHandler } from '@angular/core';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import { AppComponent } from './app.component';
+import {AppErrorHandler} from './app-error-handler';
 import { PostComponent } from './post/post.component';
 import { HttpClientModule } from '@angular/common/http';
 import { HttpModule } from '@angular/http';
 import { PostService } from './post/post.service';
 import { TableRelationComponent } from './table-relation/table-relation.component';
+import { DataService } from './post/data-service.service';
 
 
 
@@ -23,7 +25,7 @@ import { TableRelationComponent } from './table-relation/table-relation.componen
     FormsModule,
     ReactiveFormsModule
   ],
-  providers: [PostService],
+  providers: [PostService, {provide: ErrorHandler , useClass: AppErrorHandler}, DataService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

@@ -3,35 +3,15 @@ import { Http } from '@angular/http';
 import 'rxjs/add/operator/catch';
 import 'rxjs/add/observable/throw';
 import { Observable } from 'rxjs/Observable';
-import { NotKnownError } from '../not-known-error';
-import { KnownError } from '../known-error';
+import { NotFoundError } from '../not-known-error';
+import { BadInput } from '../bad-input-error';
+import { AppError } from '../app-error';
+import { DataService } from './data-service.service';
 
 @Injectable()
-export class PostService {
-  url = 'http://jsonplaceholder.typicode.com/posts';
+export class PostService extends DataService {
 
-  constructor(private http: Http) {
+  constructor(http: Http) {
+    super('http://jsonplaceholder.typicode.com/posts', http);
    }
-
-   getpost() {
-   return this.http.get(this.url);
-   }
-
-   updatepost(post) {
-    return this.http.patch(this.url + '/' + post.id, {isRead : true});
-  }
-  deletepost(post) {
-    return this.http.delete(this.url + '/' + post.id)
-    .catch((error: Response) => {
-      if (error.status === 404) {
-        return Observable.throw(new NotKnownError);
-      }
-      return Observable.throw(new KnownError(error));
-    })
-    ;
-
-  }
-  createpost(post) {
-    return this.http.post(this.url, post);
-  }
 }
