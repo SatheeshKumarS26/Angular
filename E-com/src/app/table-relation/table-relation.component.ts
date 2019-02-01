@@ -93,7 +93,6 @@ simulation.on('tick', tickActions );
 const link_force =  d3.forceLink(this.links_data)
                         .id(function(d: any) { return d.name; }).distance(250).strength(1);
 
-
 simulation.force('links', link_force);
 
 const link = g.append('g')
