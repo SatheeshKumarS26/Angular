@@ -20,6 +20,9 @@ import { OrderService } from './services/order.service';
 import { MockBackend } from '@angular/http/testing';
 import { fakeBackendProvider } from './helpers/fake-backend';
 import { AuthService } from './services/auth.service';
+import { Authguard } from './services/authguard.service';
+import { Adminauthguard } from './services/adminauthguard.service';
+import { AUTH_PROVIDERS } from 'angular2-jwt';
 
 
 @NgModule({
@@ -42,15 +45,20 @@ import { AuthService } from './services/auth.service';
     ReactiveFormsModule,
     RouterModule.forRoot([
       { path: '', component: HomeComponent },
-      { path: 'admin', component: AdminComponent },
+      { path: 'admin', component: AdminComponent , canActivate: [Authguard, Adminauthguard]},
       { path: 'login', component: LoginComponent },
       { path: 'no-access', component: NoAccessComponent }
     ])
   ],
   providers: [
-    PostService, {provide: ErrorHandler , useClass: AppErrorHandler}, DataService,
+    PostService,
+    AUTH_PROVIDERS,
+    {provide: ErrorHandler , useClass: AppErrorHandler},
+    DataService,
     OrderService,
     AuthService,
+    Authguard,
+    Adminauthguard,
     // For creating a mock back-end. You don't need these in a real app.
     fakeBackendProvider,
     MockBackend,
