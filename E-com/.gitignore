@@ -10,8 +10,8 @@
 # firebase
 
 /firebase.json
-.firebaserc
-.firebase
+/.firebaserc
+/.firebase
 
 # dependencies
 /node_modules
