@@ -23,6 +23,7 @@ import { AuthService } from './services/auth.service';
 import { Authguard } from './services/authguard.service';
 import { Adminauthguard } from './services/adminauthguard.service';
 import { AUTH_PROVIDERS } from 'angular2-jwt';
+import { CollapsableComponent } from './collapsable/collapsable.component';
 
 
 @NgModule({
@@ -35,7 +36,8 @@ import { AUTH_PROVIDERS } from 'angular2-jwt';
     HomeComponent,
     SignupComponent,
     NoAccessComponent,
-    NotFoundComponent
+    NotFoundComponent,
+    CollapsableComponent
   ],
   imports: [
     BrowserModule,
