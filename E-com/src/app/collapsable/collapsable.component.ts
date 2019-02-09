@@ -286,18 +286,20 @@ let i = 0;
 
 const root = d3.hierarchy(this.data);
 const transform = d3.zoomIdentity;
-let node, link ;
+let node, link;
 
 const svg = d3.select('body').append('svg')
 .call(d3.zoom().scaleExtent([1 / 2, 8]).on('zoom', zoomed))
 .append('g')
 .attr('transform', 'translate(40,0)');
 
-
+const div = d3.select('body').append('div')
+    .attr('class', 'tooltip')
+    .style('opacity', 0);
 
 const simulation = d3.forceSimulation()
 .force('link', d3.forceLink().id(function(d: any) { return d.id; }).distance(100).strength(1)) // distance & strength added
-.force('charge', d3.forceManyBody().distanceMax(300).strength(-500)) // added min, stength default:-15
+.force('charge', d3.forceManyBody().distanceMax(300).strength(-1000)) // added min, stength default:-15
 .force('center', d3.forceCenter( width / 2, height / 4 ))
 .on('tick', ticked);
 
@@ -305,6 +307,7 @@ const simulation = d3.forceSimulation()
 function update() {
 const nodes = flatten(root);
 const links = root.links();
+
 
 link = svg
 .selectAll('.link')
@@ -318,7 +321,19 @@ const linkEnter = link
 .attr('class', 'link')
 .style('stroke', '#000' )
 .style('opacity', '0.2')
-.style('stroke-width', 2);
+.style('stroke-width', 2).attr('marker-end', 'url(#end)');
+
+svg.append('svg:defs').selectAll('marker')
+.data(['end'])      // Different link/path types can be defined here
+.enter().append('svg:marker')    // This section adds in the arrows
+.attr('id', String)
+.attr('viewBox', '0 -5 10 10')
+.attr('refX', 18)
+.attr('markerWidth', 6)
+.attr('markerHeight', 6)
+.attr('orient', 'auto')
+.append('svg:path')
+.attr('d', 'M0,-5L10,0L0,5').style('fill', '#000000');
 
 link = linkEnter.merge(link);
 
@@ -347,21 +362,46 @@ nodeEnter.append('circle')
 .style('text-anchor', function(d) { return d.children ? 'end' : 'start'; });
 
 nodeEnter.append('text')
-.attr('font-size', 10)
+.attr('dx', '-.25em')
+.attr('dy', '.35em')
+        .text(function(d) { if (d.children) { return '0'; } else {return '1'; } });
+
+nodeEnter.append('text').attr('letter-spacing', '1px').attr('font-size', 15)
+.attr('dx', -93)
+.attr('dy', -4)
+.text(function(d) { if (d.children) { return 'Join_Name'; } } );
+
+nodeEnter.append('text')
+.attr('font-size', 10).attr('font-weight', 100).attr('letter-spacing', '2px')
         .attr('dx', 15)
         .attr('dy', 4)
         .text(function(d: any) { return d.data.name; });
+
+nodeEnter.on('mouseover', function(d) {
+  if (d.children) {
+    div.transition().duration(200).style('opacity', .9);
+  div.html('Details of Joins' + '<br/>'  + '' )
+  .style('left', (d3.event.pageX) + 'px')
+  .style('top', (d3.event.pageY - 28) + 'px');
+  }
+          link.style('stroke-dasharray', function(l) {
+            if (d === l.source || d === l.target) {
+               return '5,5';
+            }
+            });
+        });
+
+nodeEnter.on('mouseout', function() {
+  div.transition().duration(500).style('opacity', 0);
+          link.style('stroke-dasharray', 0);
+        });
+
 
 node = nodeEnter.merge(node);
 simulation.nodes(nodes);
 simulation.force<any>('link').links(links);
 }
 
-function sizeContain(num) {
-num = num > 1000 ? num / 1000 : num / 100;
-if (num < 4) { num = 4; }
-return num;
-}
 
 function color(d) {
 return d._children ? '#51A1DC' // collapsed package
@@ -369,11 +409,6 @@ return d._children ? '#51A1DC' // collapsed package
   : '#F94B4C'; // leaf node
 }
 
-function radius(d) {
-return d._children ? 8
-: d.children ? 8
-: 4;
-}
 
 function ticked() {
 link
@@ -384,6 +419,20 @@ link
 
 node
 .attr('transform', function(d) { return `translate(${d.x}, ${d.y})`; });
+
+// rotate
+// labelLine.attr('transform', function (d) {
+//   if (d.target.x < d.source.x) {
+//       const bbox = this.getBBox();
+
+//       const rx = bbox.x + bbox.width / 2;
+//       const ry = bbox.y + bbox.height / 2;
+//       return 'rotate(180 ' + rx + ' ' + ry + ')';
+//   } else {
+//       return 'rotate(0)';
+//   }
+// });
+
 }
 
 function clicked(d) {
@@ -409,6 +458,18 @@ d.fy = d.y;
 function dragged(d) {
 d.fx = d3.event.x;
 d.fy = d3.event.y;
+d.px = validate(d.px, 0, width);
+d.py = validate(d.py, 0, height);
+}
+
+function validate(x, a, b) {
+  if (x < a) {
+    x = a;
+  }
+  if (x > b) {
+  x = b;
+  }
+  return x;
 }
 
 function dragended(d) {
@@ -434,5 +495,4 @@ svg.attr('transform', d3.event.transform);
 
 update();
   }
-
 }
