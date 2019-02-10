@@ -24,6 +24,9 @@ import { Authguard } from './services/authguard.service';
 import { Adminauthguard } from './services/adminauthguard.service';
 import { AUTH_PROVIDERS } from 'angular2-jwt';
 import { CollapsableComponent } from './collapsable/collapsable.component';
+import { ReduxTestComponent } from './redux-test/redux-test.component';
+import {NgRedux, NgReduxModule} from 'ng2-redux';
+import { IAppState, rootReducer, initialState } from './store';
 
 
 @NgModule({
@@ -37,7 +40,8 @@ import { CollapsableComponent } from './collapsable/collapsable.component';
     SignupComponent,
     NoAccessComponent,
     NotFoundComponent,
-    CollapsableComponent
+    CollapsableComponent,
+    ReduxTestComponent
   ],
   imports: [
     BrowserModule,
@@ -50,7 +54,8 @@ import { CollapsableComponent } from './collapsable/collapsable.component';
       { path: 'admin', component: AdminComponent , canActivate: [Authguard, Adminauthguard]},
       { path: 'login', component: LoginComponent },
       { path: 'no-access', component: NoAccessComponent }
-    ])
+    ]),
+    NgReduxModule
   ],
   providers: [
     PostService,
@@ -67,4 +72,8 @@ import { CollapsableComponent } from './collapsable/collapsable.component';
     BaseRequestOptions],
   bootstrap: [AppComponent]
 })
-export class AppModule { }
+export class AppModule {
+ constructor(ngRedux: NgRedux<IAppState>) {
+ ngRedux.configureStore(rootReducer, initialState);
+ }
+}
