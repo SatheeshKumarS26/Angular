@@ -1,5 +1,4 @@
 {
-    'data': {
         'relationshipInfo': [
             {
                 'joinName': 'MEM',
@@ -286,11 +285,6 @@
                     }
                 ]
             }
-        ],
-    },
-    'success': true,
-    'errorMessage': null,
-    'errors': null,
-    'httpStatus': 200
+        ]
 }
 
