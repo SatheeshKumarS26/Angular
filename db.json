@@ -1,11 +1,296 @@
 {
-  "posts": [
-    {
-      "id": 1,
-      "title": "hello"
-    }
-  ],
-  "profile": {
-    "name": "typicode"
-  }
+    'data': {
+        'relationshipInfo': [
+            {
+                'joinName': 'MEM',
+                'definitionType': 'SYS',
+                'analysisMode': 'SCHEMA',
+                'primaryTable': {
+                    'tableId': '5c384608d9cb1c18411001fb',
+                    'tableName': 'MEMBER'
+                },
+                'secondaryTable': {
+                    'tableId': '5c384608d9cb1c1841100227',
+                    'tableName': 'CLAIM'
+                },
+                'joinListInfo': [
+                    {
+                        'relationshipId': '5c49503153a7a476719e84f6',
+                        'analysisMode': null,
+                        'primaryColumn': {
+                            'columnId': '5c384608d9cb1c1841100206',
+                            'columnName': 'MEM_ID',
+                            'dataType': 'INT'
+                        },
+                        'secondaryColumn': {
+                            'columnId': '5c384608d9cb1c1841100233',
+                            'columnName': 'MEM_ID',
+                            'dataType': 'INT'
+                        }
+                    }
+                ]
+            },
+            {
+                'joinName': 'member_ibfk_1',
+                'definitionType': 'MOD',
+                'analysisMode': 'SCHEMA',
+                'primaryTable': {
+                    'tableId': '5c384608d9cb1c18411001fb',
+                    'tableName': 'MEMBER'
+                },
+                'secondaryTable': {
+                    'tableId': '5c384608d9cb1c18411001e4',
+                    'tableName': 'SUBSCRIBER'
+                },
+                'joinListInfo': [
+                    {
+                        'relationshipId': '5c49503153a7a476719e84ec',
+                        'analysisMode': null,
+                        'primaryColumn': {
+                            'columnId': '5c384608d9cb1c1841100207',
+                            'columnName': 'SUB_ID',
+                            'dataType': 'INT'
+                        },
+                        'secondaryColumn': {
+                            'columnId': '5c384608d9cb1c18411001e6',
+                            'columnName': 'SUB_ID',
+                            'dataType': 'INT'
+                        }
+                    },
+                    {
+                        'relationshipId': '5c5e844c53a7a4567e58ed01',
+                        'analysisMode': null,
+                        'primaryColumn': {
+                            'columnId': '5c384608d9cb1c1841100208',
+                            'columnName': 'MEM_FIRST_NAME',
+                            'dataType': 'VARCHAR'
+                        },
+                        'secondaryColumn': {
+                            'columnId': '5c384608d9cb1c18411001e7',
+                            'columnName': 'SUB_FIRST_NAME',
+                            'dataType': 'VARCHAR'
+                        }
+                    },
+                    {
+                        'relationshipId': '5c5e844c53a7a4567e58ed02',
+                        'analysisMode': null,
+                        'primaryColumn': {
+                            'columnId': '5c384608d9cb1c1841100209',
+                            'columnName': 'MEM_LAST_NAME',
+                            'dataType': 'VARCHAR'
+                        },
+                        'secondaryColumn': {
+                            'columnId': '5c384608d9cb1c18411001e8',
+                            'columnName': 'SUB_LAST_NAME',
+                            'dataType': 'VARCHAR'
+                        }
+                    }
+                ]
+            },
+            {
+                'joinName': 'ADDRE_2',
+                'definitionType': 'MOD',
+                'analysisMode': 'SCHEMA',
+                'primaryTable': {
+                    'tableId': '5c384608d9cb1c18411001fb',
+                    'tableName': 'MEMBER'
+                },
+                'secondaryTable': {
+                    'tableId': '5c384607d9cb1c18411001cc',
+                    'tableName': 'ADDRESS'
+                },
+                'joinListInfo': [
+                    {
+                        'relationshipId': '5c49503153a7a476719e84d6',
+                        'analysisMode': null,
+                        'primaryColumn': {
+                            'columnId': '5c384608d9cb1c1841100206',
+                            'columnName': 'MEM_ID',
+                            'dataType': 'INT'
+                        },
+                        'secondaryColumn': {
+                            'columnId': '5c384607d9cb1c18411001cf',
+                            'columnName': 'ADDR_ID',
+                            'dataType': 'INT'
+                        }
+                    },
+                    {
+                        'relationshipId': '5c49503153a7a476719e84d7',
+                        'analysisMode': null,
+                        'primaryColumn': {
+                            'columnId': '5c384608d9cb1c184110020a',
+                            'columnName': 'MEM_REL',
+                            'dataType': 'CHAR'
+                        },
+                        'secondaryColumn': {
+                            'columnId': '5c384607d9cb1c18411001d1',
+                            'columnName': 'ADDR_TYPE',
+                            'dataType': 'CHAR'
+                        }
+                    },
+                    {
+                        'relationshipId': '5c5e841053a7a4567e58ece6',
+                        'analysisMode': null,
+                        'primaryColumn': {
+                            'columnId': '5c384608d9cb1c1841100208',
+                            'columnName': 'MEM_FIRST_NAME',
+                            'dataType': 'VARCHAR'
+                        },
+                        'secondaryColumn': {
+                            'columnId': '5c384607d9cb1c18411001d2',
+                            'columnName': 'ADDRESS',
+                            'dataType': 'VARCHAR'
+                        }
+                    },
+                    {
+                        'relationshipId': '5c61660c53a7a42fe229efb7',
+                        'analysisMode': null,
+                        'primaryColumn': {
+                            'columnId': '5c384608d9cb1c184110020f',
+                            'columnName': 'IS_SUB',
+                            'dataType': 'BIT'
+                        },
+                        'secondaryColumn': {
+                            'columnId': '5c384607d9cb1c18411001d0',
+                            'columnName': 'IS_PROV',
+                            'dataType': 'BIT'
+                        }
+                    },
+                    {
+                        'relationshipId': '5c6167b353a7a42fe229efcd',
+                        'analysisMode': null,
+                        'primaryColumn': {
+                            'columnId': '5c384608d9cb1c1841100209',
+                            'columnName': 'MEM_LAST_NAME',
+                            'dataType': 'VARCHAR'
+                        },
+                        'secondaryColumn': {
+                            'columnId': '5c384607d9cb1c18411001d3',
+                            'columnName': 'CITY',
+                            'dataType': 'VARCHAR'
+                        }
+                    }
+                ]
+            },
+            {
+                'joinName': 'ADDR_1',
+                'definitionType': 'MOD',
+                'analysisMode': 'SCHEMA',
+                'primaryTable': {
+                    'tableId': '5c384608d9cb1c18411001fb',
+                    'tableName': 'MEMBER'
+                },
+                'secondaryTable': {
+                    'tableId': '5c384607d9cb1c18411001cc',
+                    'tableName': 'ADDRESS'
+                },
+                'joinListInfo': [
+                    {
+                        'relationshipId': '5c49503153a7a476719e84d9',
+                        'analysisMode': null,
+                        'primaryColumn': {
+                            'columnId': '5c384608d9cb1c184110020e',
+                            'columnName': 'ADDR_ID',
+                            'dataType': 'INT'
+                        },
+                        'secondaryColumn': {
+                            'columnId': '5c384607d9cb1c18411001cf',
+                            'columnName': 'ADDR_ID',
+                            'dataType': 'INT'
+                        }
+                    },
+                    {
+                        'relationshipId': '5c49503153a7a476719e84da',
+                        'analysisMode': null,
+                        'primaryColumn': {
+                            'columnId': '5c384608d9cb1c1841100210',
+                            'columnName': 'PRIMARY_ADDR_TYPE',
+                            'dataType': 'CHAR'
+                        },
+                        'secondaryColumn': {
+                            'columnId': '5c384607d9cb1c18411001d1',
+                            'columnName': 'ADDR_TYPE',
+                            'dataType': 'CHAR'
+                        }
+                    },
+                    {
+                        'relationshipId': '5c5e842a53a7a4567e58ecf2',
+                        'analysisMode': null,
+                        'primaryColumn': {
+                            'columnId': '5c384608d9cb1c1841100206',
+                            'columnName': 'MEM_ID',
+                            'dataType': 'INT'
+                        },
+                        'secondaryColumn': {
+                            'columnId': '5c384607d9cb1c18411001d5',
+                            'columnName': 'ZIP',
+                            'dataType': 'INT'
+                        }
+                    },
+                    {
+                        'relationshipId': '5c5e842a53a7a4567e58ecf3',
+                        'analysisMode': null,
+                        'primaryColumn': {
+                            'columnId': '5c384608d9cb1c1841100208',
+                            'columnName': 'MEM_FIRST_NAME',
+                            'dataType': 'VARCHAR'
+                        },
+                        'secondaryColumn': {
+                            'columnId': '5c384607d9cb1c18411001d7',
+                            'columnName': 'FAX',
+                            'dataType': 'VARCHAR'
+                        }
+                    },
+                    {
+                        'relationshipId': '5c5e842a53a7a4567e58ecf4',
+                        'analysisMode': null,
+                        'primaryColumn': {
+                            'columnId': '5c384608d9cb1c1841100209',
+                            'columnName': 'MEM_LAST_NAME',
+                            'dataType': 'VARCHAR'
+                        },
+                        'secondaryColumn': {
+                            'columnId': '5c384607d9cb1c18411001d6',
+                            'columnName': 'PHONE',
+                            'dataType': 'VARCHAR'
+                        }
+                    }
+                ]
+            },
+            {
+                'joinName': 'ADD_MEM_1548334133343',
+                'definitionType': 'USR',
+                'analysisMode': 'SCHEMA',
+                'primaryTable': {
+                    'tableId': '5c384608d9cb1c18411001fb',
+                    'tableName': 'MEMBER'
+                },
+                'secondaryTable': {
+                    'tableId': '5c384607d9cb1c18411001cc',
+                    'tableName': 'ADDRESS'
+                },
+                'joinListInfo': [
+                    {
+                        'relationshipId': '5c49b43553a7a476719e86ba',
+                        'analysisMode': null,
+                        'primaryColumn': {
+                            'columnId': '5c384608d9cb1c184110020e',
+                            'columnName': 'ADDR_ID',
+                            'dataType': 'INT'
+                        },
+                        'secondaryColumn': {
+                            'columnId': '5c384607d9cb1c18411001cf',
+                            'columnName': 'ADDR_ID',
+                            'dataType': 'INT'
+                        }
+                    }
+                ]
+            }
+        ],
+    },
+    'success': true,
+    'errorMessage': null,
+    'errors': null,
+    'httpStatus': 200
 }
+
