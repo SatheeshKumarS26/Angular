@@ -927,9 +927,5 @@
             }
         ],
         'softDeleted': false
-    },
-    'success': true,
-    'errorMessage': null,
-    'errors': null,
-    'httpStatus': 200
+    }
 }
