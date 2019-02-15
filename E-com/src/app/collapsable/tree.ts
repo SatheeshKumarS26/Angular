@@ -1,4 +1,5 @@
 function tableNode(data) {
+      this.id = data.id;
       this.name = data.name;
       this.color = data.color;
       this.enableClick = data.enableClick;
@@ -135,11 +136,13 @@ function tableNode(data) {
     };
 
     class Prop {
+      id: string;
       name: string;
       color: string;
       enableClick: boolean;
 
-      constructor(name: string, color: string, selected: boolean) {
+      constructor(id: string, name: string, color: string, selected: boolean) {
+          this.id = id;
           this.name = name;
           this.color = color;
           this.enableClick = selected;
@@ -147,46 +150,40 @@ function tableNode(data) {
 
     }
 
-  function getChildTableList(tableName: string): Prop[] {
-
+  function getChildTableList(tableName: string, map): Prop[] {
     const  tableList = [];
-
-      const address = new Prop('ADDRESS', 'white', true);
-      const  member = new Prop('MEMBER', 'white', false);
-      const  claim = new Prop('CLAIM', 'white', false);
-      const  claimList = new Prop('CLAIMLIST', 'white', false);
-      const  subscriber = new Prop('SUBSCRIBER', 'white', false);
-      const  provider = new Prop('PROVIDER', 'white', false);
-
-      if (tableName === 'ADDRESS') {
-          tableList.push(member);
-          tableList.push(provider);
-      } else if (tableName === 'MEMBER') {
-          tableList.push(claim);
-          tableList.push(subscriber);
-      } else if (tableName === 'CLAIM') {
-        tableList.push(claimList);
-      } else {
-        // null;
-      }
+    let entireArray = [];
+    let childArray = [];
+    entireArray = map.get(tableName);
+    for (const i of entireArray) {
+      childArray = i.childTable;
+    }
+    for (const i of childArray) {
+      tableList.push(new Prop(i.secondaryTableid, i.secondaryTableName, 'white', false));
+    }
       return tableList;
 
   }
 
-  function getTableProperty(tableName: string): Prop {
+  function getTableProperty(tableName: string, map): Prop {
       let table: Prop;
-      if (tableName === 'ADDRESS') {
-          table = new Prop('ADDRESS', 'white', false);
-      } else if (tableName === 'MEMBER') {
-          table = new Prop('MEMBER', 'white', false);
-      } else if (tableName === 'CLAIM') {
-          table = new Prop('CLAIM', 'white', false);
-      } else if (tableName === 'SUBSCRIBER') {
-          table = new Prop('SUBSCRIBER', 'white', false);
-      } else if (tableName === 'PROVIDER') {
-          table = new Prop('PROVIDER', 'white', false);
-      } else if (tableName === 'CLAIMLIST') {
-          table = new Prop('CLAIMLIST', 'white', false);
+      let entireArray;
+      let childArray = [];
+      let parentId, parentName;
+      entireArray = map.get(tableName);
+      for (const i of entireArray) {
+              parentId = i.primaryTableId;
+              parentName = i.primaryTableName;
+              childArray = i.childTable;
+      }
+      if (tableName === parentName) {
+          table = new Prop(parentId, parentName, 'white', false);
+      } else {
+         for (const i of childArray) {
+          if (tableName === i.secondaryTableName) {
+            table = new Prop(i.secondaryTableid, i.secondaryTableName, 'white', false);
+          }
+         }
       }
       return table;
   }
@@ -209,12 +206,12 @@ function tableNode(data) {
   return false;
   }
 
- export function toJson(inputTableList: string []) {
+ export function toJson(inputTableList: string [], map) {
       const tree = new Tree();
       const toggleTable = inputTableList[inputTableList.length - 1]; // Last table is selected table.
 
       for (let i = 0; i < inputTableList.length; i++) {
-          const parent = getTableProperty(inputTableList[i]);
+          const parent = getTableProperty(inputTableList[i], map);
 
           if (i === 0) {
              // parent.isSelected = isSelectedPath(inputTableList,parent.tableName);
@@ -225,9 +222,8 @@ function tableNode(data) {
               }
               tree.add(parent);
           }
-          // console.log('Parent: ' + parent.tableName);
 
-          const childTableList: Prop [] = getChildTableList(parent.name);
+          const childTableList: Prop [] = getChildTableList(parent.name, map);
           for ( let j = 0; j < childTableList.length; j++) {
 
             // Set the selected flag for last table in the input table list
@@ -238,10 +234,9 @@ function tableNode(data) {
             if (isPath(inputTableList, childTableList[j].name)) {
               childTableList[j].color = 'black';
             }
-              //  console.log('Child:' + childTableList[j].tableName);
             tree.add(childTableList[j], parent);
           }
 
-      }
+        }
       return JSON.stringify(tree.root);
      }

@@ -46,7 +46,6 @@ import { IAppState, rootReducer, initialState } from './store';
   imports: [
     BrowserModule,
     HttpClientModule,
-    HttpModule,
     FormsModule,
     ReactiveFormsModule,
     RouterModule.forRoot([
@@ -67,9 +66,10 @@ import { IAppState, rootReducer, initialState } from './store';
     Authguard,
     Adminauthguard,
     // For creating a mock back-end. You don't need these in a real app.
-    fakeBackendProvider,
-    MockBackend,
-    BaseRequestOptions],
+    // fakeBackendProvider,
+    // MockBackend,
+    // BaseRequestOptions
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule {

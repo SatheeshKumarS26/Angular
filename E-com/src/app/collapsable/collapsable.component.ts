@@ -1,6 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import * as d3 from 'd3';
 import {toJson} from './tree';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import {CompleteArray, getPrimaryArray, getSecondaryArray} from './class';
+
 
 @Component({
   selector: 'app-collapsable',
@@ -9,37 +12,65 @@ import {toJson} from './tree';
 })
 export class CollapsableComponent implements OnInit {
 
-  data = {
-    'name': 'ADDRESS',
-    'color' : '#F94B4C',
-    'enableClick' : true,
-    'children': [
-     {
-      'name': 'MEMBER',
-      'color' : 'white',
-      'enableClick' : false,
-      'children' : []
-     },
-     {
-      'name': 'PROVIDER',
-      'color' : 'white',
-      'enableClick' : false,
-      'children' : []
-     }
-    ]
-   };
-
+  // data = {
+  //   'name': 'ADDRESS',
+  //   'color' : '#F94B4C',
+  //   'enableClick' : true,
+  //   'children': [
+  //    {
+  //     'name': 'MEMBER',
+  //     'color' : 'white',
+  //     'enableClick' : false,
+  //     'children' : []
+  //    },
+  //    {
+  //     'name': 'PROVIDER',
+  //     'color' : 'white',
+  //     'enableClick' : false,
+  //     'children' : []
+  //    }
+  //   ]
+  //  };
+   data;
+   obj: any[];
    selectedValues: string[] = [];
+   listofArray = [];
+   primaryTable = [];
+   secondaryTable = [];
+   joinListMap = new Map();
 
-  constructor() { }
+  constructor(private http: HttpClient) {
+    this.getJSON('5c657ec653a7a44e26207361', '5c657ee853a7a44e2620744a').subscribe((data: any) => {this.obj = data.data.relationshipInfo; console.log(this.obj);});
+   }
 
   ngOnInit() {
-  this.createchart();
+  // this.selectedValues.push(this.data.name);
+  setTimeout(() => {
+    this.primaryTable = getPrimaryArray(this.obj);
+  this.secondaryTable = getSecondaryArray(this.obj);
+  for (const i of this.primaryTable) {
+  this.joinListMap.set(i.primaryTableName, CompleteArray(i.primaryTableId, i.primaryTableName, this.secondaryTable));
   }
+  }, 5000);
+  setTimeout(() => {const data1 = JSON.parse(toJson(['ADDRESS'], this.joinListMap));
+  console.log(data1); this.data = data1; this.createchart();}, 5000);
+  }
+
+getJSON(tableid, workspaceId) {
+    const url = 'http://50.112.166.136:9000/' + 'metalyzer/tablesRelationShip?tableId=' + tableid + '&workspaceId=' + workspaceId;
+    return this.http.get<any[]>(url, {headers: this.getHeaders()});
+}
+
+getHeaders() {
+  return new HttpHeaders({
+    'Content-Type': 'application/json',
+// tslint:disable-next-line: max-line-length
+    'Authorization': 'Bearer ' + ''
+  });
+}
 
 createchart() {
 // push the parent node
-this.selectedValues.push(this.data.name);
 const width = 1000,
 height = 1000;
 
@@ -66,7 +97,6 @@ const simulation = d3.forceSimulation()
 
 // update starts
 function update(data) {
-console.log(data);
 const root = d3.hierarchy(data);
 const nodes = flatten(root);
 const links = root.links();
@@ -124,15 +154,17 @@ nodeEnter.append('circle')
 .attr('r', 10)
 .style('text-anchor', function(d) { return d.children ? 'end' : 'start'; });
 
-nodeEnter.append('text')
-.attr('dx', '-.25em')
-.attr('dy', '.35em')
-        .text(function(d) { if (d.children) { return '0'; } else {return '1'; } });
+// Cardinality
+// nodeEnter.append('text')
+// .attr('dx', '-.25em')
+// .attr('dy', '.35em')
+//         .text(function(d) { if (d.children) { return '0'; } else {return '1'; } });
 
-nodeEnter.append('text').attr('letter-spacing', '1px').attr('font-size', 15)
-.attr('dx', -93)
-.attr('dy', -4)
-.text(function(d) { if (d.children) { return 'Join_Name'; } } );
+// Join Name
+// nodeEnter.append('text').attr('letter-spacing', '1px').attr('font-size', 15)
+// .attr('dx', -93)
+// .attr('dy', -4)
+// .text(function(d) { if (d.children) { return 'Join_Name'; } } );
 
 nodeEnter.append('text')
 .attr('font-size', 10).attr('font-weight', 100).attr('letter-spacing', '2px')
@@ -224,23 +256,21 @@ if (currentColor === 'white') {
   d.parent.data.enableClick = false;
   d.data.enableClick = true;
   self.selectedValues.push(d.data.name);
-  const data1 = JSON.parse(toJson(self.selectedValues));
-  update(data1);
+  // const data1 = JSON.parse(toJson(self.selectedValues));
+  // update(data1);
 } else {
   currentColor = 'white';
   d.data.enableClick = false;
   d.parent.data.enableClick = true;
   self.selectedValues.pop();
-  const data1 = JSON.parse(toJson(self.selectedValues));
-  update(data1);
+  // const data1 = JSON.parse(toJson(self.selectedValues));
+  // update(data1);
 }
 d3.select(this).style('fill', currentColor);
 }
 }
 }
 }
-
-
 
 function dragstarted(d) {
 if (!d3.event.active) { simulation.alphaTarget(0.3).restart(); }
@@ -289,3 +319,5 @@ svg.attr('transform', d3.event.transform);
 update(this.data);
   }
 }
+
+
